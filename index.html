@@ -1,199 +1,307 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Religion Layer Unique Value Renderer</title>
-  <link rel="stylesheet" href="https://js.arcgis.com/4.29/esri/themes/light/main.css" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    html, body, #viewDiv { height: 100%; width: 100%; margin: 0; padding: 0; }
-    #filterDiv { 
-      position: absolute; 
-      top: 15px; 
-      right: 15px; 
-      z-index: 10; 
-      min-width: 280px;
-      background: white; 
-      border-radius: 8px; 
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      padding: 20px;
-    }
-    .filter-title {
-      color: #495057;
-      font-weight: 600;
-      margin-bottom: 15px;
-    }
-    .btn-custom {
-      background-color: #007bff;
-      border-color: #007bff;
-      color: white;
-    }
-    .btn-custom:hover {
-      background-color: #0056b3;
-      border-color: #0056b3;
-      color: white;
-    }
-  </style>
-</head>
-<body>
-  <div id="filterDiv">
-    <div class="filter-title">
-      <i class="fas fa-filter"></i> Filter by Religion
-    </div>
-    <div class="mb-3">
-      <select class="form-select" id="religionDropdown">
-        <option value="">All Religions</option>
-        <option value="Hindu">Hindu</option>
-        <option value="Christian">Christian</option>
-        <option value="Muslim">Muslim</option>
-        <option value="Sikh">Sikh</option>
-        <option value="Jain">Jain</option>
-      </select>
-    </div>
-    <div class="d-grid gap-2">
-      <div class="row">
-        <div class="col-6">
-          <button class="btn btn-custom btn-sm w-100" type="button" id="filterBtn">
-            <i class="fas fa-search"></i> Apply Filter
-          </button>
-        </div>
-        <div class="col-6">
-          <button class="btn btn-outline-secondary btn-sm w-100" type="button" id="resetBtn">
-            <i class="fas fa-undo"></i> Reset
-          </button>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Religion Layer Unique Value Renderer</title>
+    <link
+      rel="stylesheet"
+      href="https://js.arcgis.com/4.29/esri/themes/light/main.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      html,
+      body,
+      #viewDiv {
+        height: 100%;
+        width: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #filterDiv {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        z-index: 10;
+        min-width: 280px;
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        padding: 20px;
+      }
+      .filter-title {
+        color: #495057;
+        font-weight: 600;
+        margin-bottom: 15px;
+      }
+      .btn-custom {
+        background-color: #007bff;
+        border-color: #007bff;
+        color: white;
+      }
+      .btn-custom:hover {
+        background-color: #0056b3;
+        border-color: #0056b3;
+        color: white;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="filterDiv">
+      <div class="filter-title">
+        <i class="fas fa-filter"></i> Filter by Religion
+      </div>
+      <div class="mb-3">
+        <select class="form-select" id="religionDropdown">
+          <option value="">All Religions</option>
+          <option value="Hindu">Hindu</option>
+          <option value="Christian">Christian</option>
+          <option value="Muslim">Muslim</option>
+          <option value="Sikh">Sikh</option>
+          <option value="Jain">Jain</option>
+          <option value="Jewish">Jewish</option>
+          <option value="Zoroastrian">Zoroastrian</option>
+          <option value="Spiritualist">Spiritualist</option>
+          <option value="Shinto">Shinto</option>
+        </select>
+      </div>
+      <div class="d-grid gap-2">
+        <div class="row">
+          <div class="col-6">
+            <button
+              class="btn btn-custom btn-sm w-100"
+              type="button"
+              id="filterBtn"
+            >
+              <i class="fas fa-search"></i> Apply Filter
+            </button>
+          </div>
+          <div class="col-6">
+            <button
+              class="btn btn-outline-secondary btn-sm w-100"
+              type="button"
+              id="resetBtn"
+            >
+              <i class="fas fa-undo"></i> Reset
+            </button>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <div id="viewDiv"></div>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://kit.fontawesome.com/your-kit-id.js" crossorigin="anonymous"></script>
-  <script src="https://js.arcgis.com/4.29/"></script>
-  <script>
-    require([
-      "esri/Map",
-      "esri/views/MapView",
-      "esri/layers/FeatureLayer"
-    ], function(Map, MapView, FeatureLayer) {
-      const iconUrls = {
-        "Hindu": "https://img.icons8.com/color/48/temple.png",
-        "Christian": "https://img.icons8.com/color/48/church.png",
-        "Muslim": "https://img.icons8.com/color/48/mosque.png",
-        "Sikh": "https://img.icons8.com/color/48/sikhism.png",
-        "Jain": "https://img.icons8.com/color/48/temple.png"
-      };
+    <div id="viewDiv"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+      src="https://kit.fontawesome.com/your-kit-id.js"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://js.arcgis.com/4.29/"></script>
+    <script>
+      require([
+        "esri/Map",
+        "esri/views/MapView",
+        "esri/layers/FeatureLayer",
+      ], function (Map, MapView, FeatureLayer) {
+        // Optimized: Use simple markers with colors instead of external images for better performance
+        const religionColors = {
+          Hindu: "#FF6B35",      // Orange
+          Christian: "#4285F4",   // Blue
+          Muslim: "#34A853",      // Green
+          Sikh: "#FBBC04",        // Yellow
+          Jain: "#EA4335",        // Red
+          Jewish: "#9C27B0",      // Purple
+          Buddhist: "#FF9800",    // Amber
+          Zoroastrian: "#795548",  // Brown
+          Spiritualist: "#607D8B", // Blue Grey
+          Shinto: "#E91E63"       // Pink
+        };
 
-      const renderer = {
-        type: "unique-value",
-        field: "religion",
-        uniqueValueInfos: [
-          {
-            value: "Hindu",
+        // Fallback icon URLs (loaded only when needed)
+        const iconUrls = {
+          Hindu: "https://img.icons8.com/?size=24&id=eTApPBqmoGMs&format=png&color=000000",
+          Christian: "https://img.icons8.com/color/24/church.png",
+          Muslim: "https://img.icons8.com/color/24/mosque.png",
+          Sikh: "https://img.icons8.com/?size=48&id=ILaMpX7gUG4K&format=png&color=000000",
+          Jain: "https://img.icons8.com/color/24/temple.png",
+          Jewish: "https://img.icons8.com/?size=24&id=15280&format=png&color=000000",
+          Buddhist: "https://img.icons8.com/?size=24&id=VEurcbl1qui4&format=png&color=000000",
+          Zoroastrian: "https://img.icons8.com/?size=24&id=8LM7-CYX4BPD&format=png&color=000000",
+          Spiritualist: "https://img.icons8.com/?size=24&id=aNr36EdyJrEE&format=png&color=000000",
+          Shinto: "https://img.icons8.com/?size=24&id=JlUGr7nwSUUt&format=png&color=000000"
+        };
+
+        // Fast renderer using simple markers (better performance)
+        const fastRenderer = {
+          type: "unique-value",
+          field: "religion",
+          uniqueValueInfos: Object.keys(religionColors).map(religion => ({
+            value: religion,
             symbol: {
-              type: "picture-marker",
-              url: iconUrls["Hindu"],
-              width: "24px",
-              height: "24px"
+              type: "simple-marker",
+              color: religionColors[religion],
+              size: 8,
+              outline: {
+                color: "white",
+                width: 1
+              }
             },
-            label: "Hindu"
+            label: religion,
+          })),
+          defaultSymbol: {
+            type: "simple-marker",
+            color: "gray",
+            size: 6,
           },
-          {
-            value: "Christian",
+          defaultLabel: "Other",
+        };
+
+        // Detailed renderer with icons (for closer zoom levels)
+        const detailedRenderer = {
+          type: "unique-value",
+          field: "religion",
+          uniqueValueInfos: Object.keys(religionColors).filter(religion => iconUrls[religion]).map(religion => ({
+            value: religion,
             symbol: {
               type: "picture-marker",
-              url: iconUrls["Christian"],
-              width: "24px",
-              height: "24px"
+              url: iconUrls[religion],
+              width: "20px",
+              height: "20px",
             },
-            label: "Christian"
+            label: religion,
+          })),
+          defaultSymbol: {
+            type: "simple-marker",
+            color: "gray",
+            size: 8,
           },
-          {
-            value: "Muslim",
-            symbol: {
-              type: "picture-marker",
-              url: iconUrls["Muslim"],
-              width: "24px",
-              height: "24px"
-            },
-            label: "Muslim"
+          defaultLabel: "Other",
+        };
+
+        const religionLayer = new FeatureLayer({
+          url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Places_of_Worship_India/FeatureServer/0",
+          renderer: fastRenderer, // Start with fast renderer
+          outFields: ["religion", "name", "lat", "lon"], // Only fetch needed fields
+          popupTemplate: {
+            title: "{expression/displayName}",
+            content: [
+              {
+                type: "text",
+                text: `
+                  <div style="font-family: Arial, sans-serif; line-height: 1.5;">
+                    <b>Name:</b> {expression/displayName}<br>
+                    <b>Religion:</b> {religion}<br>
+                    <b>Coordinates:</b> {lat}, {lon}
+                  </div>
+                `
+              }
+            ],
+            expressionInfos: [
+              {
+                name: "displayName",
+                title: "Display Name",
+                expression: `
+                  var name = $feature.name;
+                  var religion = $feature.religion;
+                  
+                  // Check if name is null, empty, or undefined
+                  if (IsEmpty(name) || name == null || Trim(name) == "" || name == "<Null>") {
+                    // Return default name based on religion
+                    var defaultName = When(
+                      religion == "Hindu", "Temple",
+                      religion == "Christian", "Church", 
+                      religion == "Muslim", "Mosque",
+                      religion == "Sikh", "Gurdwara",
+                      religion == "Jain", "Derasar",
+                      religion == "Jewish", "Synagogue",
+                      religion == "Buddhist", "Buddhist Monastery",
+                      religion == "Zoroastrian", "Fire Temple",
+                      religion == "Spiritualist", "Spiritualism Temple",
+                      religion == "Shinto", "Jinja",
+                      "Place of Worship" // default fallback
+                    );
+                    return defaultName;
+                  } else {
+                    return name;
+                  }
+                `
+              }
+            ]
           },
-          {
-            value: "Sikh",
-            symbol: {
-              type: "picture-marker",
-              url: iconUrls["Sikh"],
-              width: "24px",
-              height: "24px"
-            },
-            label: "Sikh"
+          // Performance optimizations
+          maxRecordCount: 5000, // Limit records for better performance
+          refreshInterval: 0, // Disable auto-refresh
+        });
+
+        const map = new Map({
+          basemap: "streets-navigation-vector",
+          layers: [religionLayer],
+        });
+
+        const view = new MapView({
+          container: "viewDiv",
+          map: map,
+          center: [78.9629, 20.5937], // Center on India
+          zoom: 4,
+          // Performance optimizations
+          constraints: {
+            minZoom: 3,
+            maxZoom: 18
           },
-          {
-            value: "Jain",
-            symbol: {
-              type: "picture-marker",
-              url: iconUrls["Jain"],
-              width: "24px",
-              height: "24px"
-            },
-            label: "Jain"
+          highlightOptions: {
+            color: "#2B83BA",
+            fillOpacity: 0.4
           }
-        ],
-        defaultSymbol: {
-          type: "simple-marker",
-          color: "gray",
-          size: 8
-        },
-        defaultLabel: "Other"
-      };
+        });
 
-      const religionLayer = new FeatureLayer({
-        url: "https://services.arcgis.com/V6ZHFr6zdgNZuVG0/arcgis/rest/services/Places_of_Worship_India/FeatureServer/0",
-        renderer: renderer,
-        outFields: ["*"],
-        popupTemplate: {
-          title: "{name}",
-          content: "Religion: {religion}<br>Type: {type}<br>Address: {address}"
+        // Dynamic renderer switching based on zoom level for better performance
+        let currentRendererType = "fast"; // Track current renderer type
+        
+        view.watch("zoom", function(newZoom) {
+          console.log("Current zoom level:", newZoom); // Debug log
+          if (newZoom >= 10 && currentRendererType === "fast") {
+            // Switch to detailed icons when zoomed in
+            console.log("Switching to detailed renderer (icons)"); // Debug log
+            religionLayer.renderer = detailedRenderer;
+            currentRendererType = "detailed";
+          } else if (newZoom < 10 && currentRendererType === "detailed") {
+            // Switch back to simple markers when zoomed out
+            console.log("Switching to fast renderer (simple markers)"); // Debug log
+            religionLayer.renderer = fastRenderer;
+            currentRendererType = "fast";
+          }
+        });
+
+        // Debounced filter to prevent too many requests
+        let filterTimeout;
+        function applyFilter(value) {
+          clearTimeout(filterTimeout);
+          filterTimeout = setTimeout(() => {
+            if (value) {
+              religionLayer.definitionExpression = `religion = '${value}'`;
+            } else {
+              religionLayer.definitionExpression = null;
+            }
+          }, 300); // 300ms delay
         }
-      });
 
-      const map = new Map({
-        basemap: "streets-navigation-vector",
-        layers: [religionLayer]
-      });
+        // Optimized filter functionality
+        document.getElementById("filterBtn").onclick = function () {
+          const value = document.getElementById("religionDropdown").value;
+          applyFilter(value);
+        };
 
-      const view = new MapView({
-        container: "viewDiv",
-        map: map,
-        center: [78.9629, 20.5937], // Center on India
-        zoom: 4
-      });
-
-      // Filter functionality
-      document.getElementById("filterBtn").onclick = function() {
-        const value = document.getElementById("religionDropdown").value;
-        if (value) {
-          religionLayer.definitionExpression = `religion = '${value}'`;
-        } else {
+        document.getElementById("resetBtn").onclick = function () {
           religionLayer.definitionExpression = null;
-        }
-      };
-      
-      document.getElementById("resetBtn").onclick = function() {
-        religionLayer.definitionExpression = null;
-        document.getElementById("religionDropdown").value = "";
-      };
+          document.getElementById("religionDropdown").value = "";
+        };
 
-      // Auto-filter on dropdown change
-      document.getElementById("religionDropdown").onchange = function() {
-        const value = this.value;
-        if (value) {
-          religionLayer.definitionExpression = `religion = '${value}'`;
-        } else {
-          religionLayer.definitionExpression = null;
-        }
-      };
-    });
-  </script>
-</body>
+        // Auto-filter on dropdown change with debouncing
+        document.getElementById("religionDropdown").onchange = function () {
+          applyFilter(this.value);
+        };
+      });
+    </script>
+  </body>
 </html>
